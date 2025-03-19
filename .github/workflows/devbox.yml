@@ -1,0 +1,27 @@
+name: Devbox
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  cache:
+    name: Devbox
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: echo "${{ hashFiles(format('{0}/devbox.lock', '.')) }}"
+
+      - uses: ./.github/actions/devbox
+        with:
+          enable-cache: 'true'
+
+      - run: |
+          git status
+          git diff
+
+      - run: echo "${{ hashFiles(format('{0}/devbox.lock', '.')) }}"
